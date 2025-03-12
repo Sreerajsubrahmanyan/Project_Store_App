@@ -1,0 +1,52 @@
+<turbo-stream action="replace" target="like_button_<%= @product.id %>">
+  <template>
+    <turbo-frame id="like_button_<%= @product.id %>">
+      <%= button_to unlike_product_path(@product), method: :delete, class: "btn btn-outline-danger btn-sm px-4" do %>
+        <i class="fas fa-heart"></i> Unlike
+      <% end %>
+    </turbo-frame>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="liked_items_list">
+  <template>
+    <div id="liked_items_list">
+      <h1 class="mb-4 text-center">Liked Items</h1>
+
+      <% if @liked_products.any? %>
+        <div class="container">
+          <div class="row justify-content-center">
+            <% @liked_products.each do |product| %>
+              <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-lg">
+                  <% if product.image.present? %>
+                    <%= image_tag product.image, class: "card-img-top rounded-top", style: "height: 220px; object-fit: cover;" %>
+                  <% end %>
+
+                  <div class="card-body text-center">
+                    <h5 class="card-title"><%= product.name %></h5>
+                    <p class="card-text text-muted mb-2">Price: <strong>₹<%= product.price %></strong></p>
+
+                    <div class="d-grid gap-2">
+                      <%= link_to "View Product", product_path(product), class: "btn btn-primary btn-sm px-4" %>
+
+                      <%= button_to unlike_product_path(product), method: :delete, class: "btn btn-outline-danger btn-sm px-4" do %>
+                        <i class="fas fa-heart"></i> Unlike
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <p class="alert alert-warning text-center">You have not liked any items yet.</p>
+      <% end %>
+
+      <div class="text-center mt-4">
+        <%= link_to "Browse Products", products_path, class: "btn btn-primary px-4" %>
+      </div>
+    </div>
+  </template>
+</turbo-stream>

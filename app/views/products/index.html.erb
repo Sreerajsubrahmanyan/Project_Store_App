@@ -1,0 +1,86 @@
+<div class="container mt-4">
+  <% if user_signed_in? %>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger btn-sm" %>
+      </div>
+      <div>
+        <%= link_to "My Orders", orders_path, class: "btn btn-info btn-sm me-2" %>
+        <%= link_to "View Cart (#{current_user.cart&.cart_items&.count || 0})", cart_path, class: "btn btn-primary btn-sm me-2" %>
+        <%= link_to "Liked Items ❤️", liked_items_path, class: "btn btn-warning btn-sm" %>
+      </div>
+    </div>
+    <p class="fw-bold text-center">Welcome, <%= current_user.username %>!</p>
+  <% else %>
+    <div class="text-center mb-4">
+      <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-success me-2" %>
+      <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <h2 class="my-4 text-center">Products</h2>
+
+  <%= form_with url: products_path, method: :get, local: true, class: "row g-3 mb-4" do %>
+    <div class="col-md-4">
+      <input type="text" name="query" class="form-control" placeholder="Search products" value="<%= params[:query] %>">
+    </div>  
+    <div class="col-md-3">
+      <select name="category" class="form-select">
+        <option value="">All Categories</option>
+        <% @categories.each do |category| %>
+          <option value="<%= category %>" <%= "selected" if params[:category] == category %>><%= category %></option>
+        <% end %>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="min_price" class="form-control" placeholder="Min Price" value="<%= params[:min_price] %>">
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="max_price" class="form-control" placeholder="Max Price" value="<%= params[:max_price] %>">
+    </div>
+    <div class="col-md-1 d-grid">
+      <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+    <div class="col-md-1 d-grid">
+      <%= link_to "Clear", products_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <% @products.each do |product| %>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100">
+          <% if product.image.present? %>
+            <%= image_tag product.image, class: "card-img-top", style: "height: 200px; object-fit: cover;" %>
+          <% end %>
+          <div class="card-body text-center">
+            <h5 class="card-title">
+              <%= link_to product.name, product_path(product), class: "text-dark fw-bold text-decoration-none" %>
+            </h5>
+            <p class="card-text text-success fw-bold">$<%= product.price %></p>
+
+            <div class="d-flex justify-content-between">
+              <% if user_signed_in? %>
+                <turbo-frame id="like_button_<%= product.id %>">
+                  <% if current_user.liked_products.include?(product) %>
+                    <%= button_to "❤️ Unlike", unlike_product_path(product), method: :delete, remote: true, class: "btn btn-outline-danger btn-sm", data: { turbo: "true" } %>
+                  <% else %>
+                    <%= button_to "🤍 Like", like_product_path(product), method: :post, remote: true, class: "btn btn-outline-primary btn-sm", data: { turbo: "true" } %>
+                  <% end %>
+                </turbo-frame>
+              <% else %>
+                <%= link_to "🤍 Like", new_user_session_path, class: "btn btn-outline-primary btn-sm" %>
+              <% end %>
+
+              <% if user_signed_in? %>
+                <%= button_to "Add to Cart", cart_items_path(product_id: product.id), method: :post, class: "btn btn-success btn-sm" %>
+              <% else %>
+                <%= link_to "Add to Cart", new_user_session_path, class: "btn btn-success btn-sm" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<h1 class="mb-4 text-center">My Orders</h1>
+
+<% if @orders.any? %>
+  <div class="container">
+    <div class="list-group">
+      <% @orders.each do |order| %>
+        <div class="list-group-item shadow-sm mb-3 rounded border">
+          <h5 class="mb-3">
+            Order #<%= order.id %> - 
+            <span class="text-muted">Placed on <%= order.created_at.strftime("%d %b %Y, %I:%M %p") %></span>
+          </h5>
+
+          <% order.order_items.each do |item| %>
+            <div class="d-flex align-items-center p-2 border-bottom">
+              <% if item.product.image.present? %>
+                <%= image_tag item.product.image, class: "rounded me-3", style: "width: 100px; height: 100px; object-fit: cover;" %>
+              <% end %>
+
+              <div>
+                <h6 class="mb-1"><%= item.product.name %></h6>
+                <p class="text-muted mb-0">Quantity: <strong><%= item.quantity %></strong></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <%= button_to "Clear All Orders", clear_orders_path, method: :delete, class: "btn btn-danger px-4", data: { confirm: "Are you sure you want to delete all your orders?" } %>
+  </div>
+
+<% else %>
+  <p class="alert alert-warning text-center">No orders yet.</p>
+<% end %>
+
+<div class="text-center mt-4">
+  <%= link_to "Back to Cart", cart_path, class: "btn btn-secondary me-2 px-4" %>
+  <%= link_to "Continue Shopping", products_path, class: "btn btn-primary px-4" %>
+</div>
