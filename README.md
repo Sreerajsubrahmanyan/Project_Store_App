@@ -1,24 +1,10 @@
-# README
+Store App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+ A simple e-commerce platform built with Ruby on Rails, allowing users to browse products, filter by category and price, and manage their shopping cart. Users can sign up, log in, like products, and place orders. The app supports Turbo for seamless updates and Devise for authentication.
+🔹 Key Features
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+    User Authentication (Sign up, Log in, Logout)
+    Product Listings with categories and search filters
+    Like/Unlike Products and view liked items
+    Shopping Cart to add and remove products
+    Order Management to track purchases   
